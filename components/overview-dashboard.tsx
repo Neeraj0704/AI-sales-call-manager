@@ -7,12 +7,15 @@ import { StatCard } from "./stat-card";
 import { RecentCallsTable } from "./recent-calls-table";
 
 export function OverviewDashboard() {
-  const { data: agents, isLoading: agentsLoading } = useAssistants();
-  const { data: calls, isLoading: callsLoading } = useCalls();
+  const { data: agents, isLoading: agentsLoading, error: agentsError } = useAssistants();
+  const { data: calls, isLoading: callsLoading, error: callsError } = useCalls();
 
   const isLoading = agentsLoading || callsLoading;
+  const hasError = agentsError || callsError;
   const agentList = Array.isArray(agents) ? agents : [];
   const callList = Array.isArray(calls) ? calls : [];
+
+  console.log("[v0] Overview: isLoading=", isLoading, "hasError=", hasError, "agents=", agents, "calls=", calls);
 
   const endedCalls = callList.filter((c) => c.status === "ended");
   const activeCalls = callList.filter(
@@ -37,6 +40,22 @@ export function OverviewDashboard() {
     endedCalls.length > 0
       ? `${Math.round((bookedCount / endedCalls.length) * 100)}%`
       : "--";
+
+  if (hasError) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">Overview</h1>
+          <p className="mt-1 text-sm text-destructive">
+            Failed to load data. Check your VAPI_API_KEY in environment variables.
+          </p>
+          <pre className="mt-2 max-w-lg overflow-auto rounded-md bg-card p-3 text-xs text-muted-foreground">
+            {agentsError?.message ?? callsError?.message ?? "Unknown error"}
+          </pre>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
