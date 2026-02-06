@@ -223,6 +223,20 @@ This is a **Retrieval-Augmented Generation (RAG)** pattern (see architecture dia
 
 ---
 
+## Deployment (optional)
+
+This project is **not set up for hosting**. There is no `vercel.json` or other deployment config in the repo.
+
+**To stop automatic deployments** (e.g. if the repo was previously connected to Vercel):
+
+1. Open [Vercel Dashboard](https://vercel.com/dashboard) → your project.
+2. Go to **Settings** → **Git**.
+3. Either **disconnect** the Git repository, or turn off **Automatically deploy pushes** (and optionally **Automatically deploy pull requests**).
+
+After that, pushes to the repo will no longer trigger new deployments.
+
+---
+
 ## Disclaimer
 
 SalesForge AI is a **demo and prototype** built to showcase the integration of AI voice agents, MCP, and a manager-facing dashboard. It is not intended for production sales usage. Call volumes, error handling, and security measures are scoped for demonstration purposes.
