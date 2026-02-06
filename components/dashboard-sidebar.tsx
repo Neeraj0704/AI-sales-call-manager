@@ -21,6 +21,8 @@ function OverviewIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
+      width={16}
+      height={16}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -40,6 +42,8 @@ function CallsIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
+      width={16}
+      height={16}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -56,6 +60,8 @@ function PhoneOutIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
+      width={16}
+      height={16}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

@@ -15,8 +15,6 @@ export function OverviewDashboard() {
   const agentList = Array.isArray(agents) ? agents : [];
   const callList = Array.isArray(calls) ? calls : [];
 
-  console.log("[v0] Overview: isLoading=", isLoading, "hasError=", hasError, "agents=", agents, "calls=", calls);
-
   const endedCalls = callList.filter((c) => c.status === "ended");
   const activeCalls = callList.filter(
     (c) =>
