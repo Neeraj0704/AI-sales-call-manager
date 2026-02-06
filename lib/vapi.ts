@@ -30,22 +30,15 @@ export async function vapiPost<T>(
   path: string,
   body: Record<string, unknown>,
 ): Promise<T> {
-  const url = `${VAPI_BASE_URL}${path}`;
-  console.log("[v0] vapiPost URL:", url);
-  console.log("[v0] vapiPost body:", JSON.stringify(body, null, 2));
-
-  const res = await fetch(url, {
+  const res = await fetch(`${VAPI_BASE_URL}${path}`, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify(body),
     cache: "no-store",
   });
 
-  console.log("[v0] vapiPost response status:", res.status);
-
   if (!res.ok) {
     const responseBody = await res.text();
-    console.error("[v0] vapiPost error response:", responseBody);
     throw new Error(`Vapi API error ${res.status}: ${responseBody}`);
   }
 
