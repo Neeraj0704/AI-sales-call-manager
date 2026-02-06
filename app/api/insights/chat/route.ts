@@ -1,5 +1,5 @@
 import { generateText } from "ai";
-import { xai } from "@ai-sdk/xai";
+import { createOpenAI } from "@ai-sdk/openai";
 import { NextResponse } from "next/server";
 import { vapiGet } from "@/lib/vapi";
 import type { VapiCall } from "@/lib/types";
@@ -23,15 +23,28 @@ function buildContextFromCalls(calls: VapiCall[]): string {
   }
 
   const callSummaries = calls.slice(0, MAX_CALLS).map((call, idx) => {
-    const duration = call.endedAt && call.startedAt 
-      ? ((new Date(call.endedAt).getTime() - new Date(call.startedAt).getTime()) / 1000 / 60).toFixed(1)
-      : "N/A";
-    
-    const appointmentBooked = call.analysis?.structuredData?.appointmentBooked ? "Yes" : "No";
-    const successScore = call.analysis?.structuredData?.successScore ?? "N/A";
-    const callSummary = call.analysis?.structuredData?.callSummary || call.analysis?.summary || "No summary available";
-    
-    const transcript = call.transcript 
+    const duration =
+      call.endedAt && call.startedAt
+        ? (
+            (new Date(call.endedAt).getTime() -
+              new Date(call.startedAt).getTime()) /
+            1000 /
+            60
+          ).toFixed(1)
+        : "N/A";
+
+    const appointmentBooked = call.analysis?.structuredData
+      ?.appointmentBooked
+      ? "Yes"
+      : "No";
+    const successScore =
+      call.analysis?.structuredData?.successScore ?? "N/A";
+    const callSummary =
+      call.analysis?.structuredData?.callSummary ||
+      call.analysis?.summary ||
+      "No summary available";
+
+    const transcript = call.transcript
       ? truncateTranscript(call.transcript, MAX_TRANSCRIPT_CHARS)
       : "No transcript available";
 
@@ -70,12 +83,13 @@ export async function POST(request: Request) {
     // If no calls, return friendly message
     if (agentCalls.length === 0) {
       return NextResponse.json({
-        answer: "No call history for this agent yet. Make at least one call and come back.",
+        answer:
+          "No call history for this agent yet. Make at least one call and come back.",
         hasData: false,
       });
     }
 
-    // Call Grok with context
+    // Build system prompt with context
     const systemPrompt = `You are a sales manager analyst. Your job is to answer questions about a specific sales agent's call history.
 
 You MUST:
@@ -88,8 +102,14 @@ You MUST:
 Here is the call data for the agent:
 ${context}`;
 
+    // Call AI via Vercel AI Gateway
+    const client = createOpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      baseURL: "https://api.openai.com/v1",
+    });
+
     const response = await generateText({
-      model: xai("grok-2"),
+      model: client("gpt-4o-mini"),
       system: systemPrompt,
       prompt: question,
       temperature: 0.3,
@@ -103,8 +123,16 @@ ${context}`;
     });
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : "Failed to process insights chat";
-    console.error("[v0] Insights chat error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+      error instanceof Error
+        ? error.message
+        : "Failed to process insights chat";
+    console.error("[v0] Insights chat error:", { message, error });
+    return NextResponse.json(
+      {
+        error: message,
+        details: error instanceof Error ? error.stack : undefined,
+      },
+      { status: 500 }
+    );
   }
 }
