@@ -32,29 +32,49 @@ The AI agents speak naturally over the phone using large language models and tex
 ## High-Level Architecture
 
 ```
-+---------------------+       +----------------------+       +-------------------+
-|                     |       |                      |       |                   |
-|   Next.js Dashboard | ----> |  Next.js API Routes  | ----> |   Vapi MCP Server |
-|   (React Frontend)  |       |  (MCP Client Layer)  |       |   (Telephony +    |
-|                     |       |                      |       |    Voice AI)      |
-+---------------------+       +----------+-----------+       +-------------------+
-                                         |
-                                         v
-                              +----------+-----------+
-                              |                      |
-                              |   Vercel AI SDK      |
-                              |   (LLM for Insights) |
-                              |                      |
-                              +----------------------+
+                    +---------------------+
+                    |   Next.js Dashboard  |
+                    |   (React Frontend)   |
+                    +----------+----------+
+                               |
+                               | API requests (agents, calls, chat)
+                               v
+                    +---------------------+
+                    |  Next.js API Routes |
+                    |  (MCP client + LLM) |
+                    +----------+----------+
+                               |
+         +---------------------+---------------------+
+         |                     |                     |
+         | list_assistants     | list_calls           | chat (with context)
+         | list_phone_numbers  | get_call             |
+         | create_call         | (transcripts,        |
+         v                     |  structured data)   v
++----------------+              |              +----------------+
+|  Vapi MCP      |<-------------+              |      LLM       |
+|  Server        |   retrieve context         | (Insights Chat)|
+| (Telephony +   |   for Insights Chat        |                |
+|  Voice AI)     |                             |  Context:      |
++----------------+                             |  - transcripts |
+                                              |  - success     |
+                                              |  - summary     |
+                                              +----------------+
 ```
+
+**How context is retrieved for the LLM**
+
+1. **Source** — Call data (transcripts, structured outputs) lives in **Vapi** (via MCP tools `list_calls`, `get_call`).
+2. **Retrieval** — When the user asks a question in AI Insights Chat, the **API routes** call those MCP tools to fetch the selected agent’s calls and full call details.
+3. **Augmentation** — The backend formats that data (transcripts, success score, appointment booked, call summary) into a **context payload** and injects it into the LLM system prompt.
+4. **Generation** — The **LLM** (via Vercel AI SDK) answers only from that context, so responses are grounded in real call data.
 
 | Layer | Technology | Responsibility |
 |-------|-----------|----------------|
 | **Frontend** | Next.js + React | Dashboard UI, agent cards, call tables, chat interface |
-| **Backend** | Next.js API Routes | MCP client that proxies requests to Vapi |
-| **Telephony + Voice AI** | Vapi | Manages phone calls, voice synthesis, transcription |
-| **AI Orchestration** | Model Context Protocol (MCP) | Standardized tool interface between backend and Vapi |
-| **LLM Analysis** | Vercel AI SDK | Powers the AI Insights Chat for post-call analysis |
+| **Backend** | Next.js API Routes | MCP client to Vapi; assembles context and calls LLM for Insights Chat |
+| **Telephony + Voice AI** | Vapi | Manages phone calls, voice synthesis, transcription; source of call data |
+| **Context retrieval** | MCP tools (`list_calls`, `get_call`) | Fetches calls, transcripts, and structured outputs from Vapi |
+| **LLM** | Vercel AI SDK + any compatible LLM | Consumes retrieved context and powers AI Insights Chat |
 
 ---
 
@@ -158,10 +178,10 @@ The AI Insights Chat is a conversational interface that lets a sales manager ask
 
 ### Technical Pattern
 
-This is a **Retrieval-Augmented Generation (RAG)** pattern:
-- **Retrieval**: Call transcripts and structured outputs are fetched from Vapi.
-- **Augmentation**: The data is formatted and injected into the LLM's system prompt.
-- **Generation**: The LLM produces an answer constrained to the provided context.
+This is a **Retrieval-Augmented Generation (RAG)** pattern (see architecture diagram above):
+- **Retrieval**: Call transcripts and structured outputs are fetched from Vapi via MCP tools (`list_calls`, `get_call`).
+- **Augmentation**: The API routes format the data and inject it into the LLM's system prompt as context.
+- **Generation**: The LLM produces an answer constrained to that context.
 
 ---
 
@@ -196,7 +216,7 @@ This is a **Retrieval-Augmented Generation (RAG)** pattern:
 | **Next.js 16** | Full-stack framework (frontend + API routes) |
 | **React** | UI component library |
 | **Tailwind CSS v4** | Utility-first styling |
-| **Vercel AI SDK** | LLM integration for AI Insights Chat |
+| **LLM** | Powers AI Insights Chat; context is retrieved from Vapi and passed via Vercel AI SDK |
 | **Vapi** | Voice AI platform for outbound phone calls |
 | **Model Context Protocol (MCP)** | Standardized tool interface connecting the backend to Vapi |
 | **SWR** | Client-side data fetching with polling for real-time updates |
