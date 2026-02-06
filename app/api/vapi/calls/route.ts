@@ -25,6 +25,8 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log("[v0] Creating call with:", { assistantId, phoneNumberId, customerNumber });
+
     const call = await vapiPost("/calls", {
       assistantId,
       phoneNumberId,
@@ -37,6 +39,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to create call";
+    console.error("[v0] Call creation error:", { message, error });
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
