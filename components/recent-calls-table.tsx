@@ -36,10 +36,12 @@ export function RecentCallsTable({
   calls,
   agents,
   limit = 10,
+  onHideCall,
 }: {
   calls: VapiCall[];
   agents: VapiAssistant[];
   limit?: number;
+  onHideCall?: (id: string) => void;
 }) {
   const sorted = [...calls]
     .sort(
@@ -83,6 +85,11 @@ export function RecentCallsTable({
             <th className="px-4 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Time
             </th>
+            {onHideCall && (
+              <th className="px-4 py-2.5 text-right text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Actions
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
@@ -116,6 +123,34 @@ export function RecentCallsTable({
               <td className="px-4 py-3 text-sm text-muted-foreground">
                 {formatTime(call.createdAt)}
               </td>
+              {onHideCall && (
+                <td className="px-4 py-3 text-right">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onHideCall(call.id);
+                    }}
+                    className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    aria-label={`Hide call ${call.id}`}
+                  >
+                    <svg
+                      width={14}
+                      height={14}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                    <span className="sr-only sm:not-sr-only">Delete</span>
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

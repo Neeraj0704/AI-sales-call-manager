@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useAssistants, useCalls } from "@/lib/hooks";
+import { useAssistants, useCalls, useHiddenCalls } from "@/lib/hooks";
 import { AgentCard } from "./agent-card";
 import { StatCard } from "./stat-card";
 import { RecentCallsTable } from "./recent-calls-table";
@@ -9,11 +9,13 @@ import { RecentCallsTable } from "./recent-calls-table";
 export function OverviewDashboard() {
   const { data: agents, isLoading: agentsLoading, error: agentsError } = useAssistants();
   const { data: calls, isLoading: callsLoading, error: callsError } = useCalls();
+  const { hiddenIds, hideCall } = useHiddenCalls();
 
   const isLoading = agentsLoading || callsLoading;
   const hasError = agentsError || callsError;
   const agentList = Array.isArray(agents) ? agents : [];
-  const callList = Array.isArray(calls) ? calls : [];
+  const allCalls = Array.isArray(calls) ? calls : [];
+  const callList = allCalls.filter((c) => !hiddenIds.has(c.id));
 
   const endedCalls = callList.filter((c) => c.status === "ended");
   const activeCalls = callList.filter(
@@ -164,7 +166,7 @@ export function OverviewDashboard() {
             View all
           </Link>
         </div>
-        <RecentCallsTable calls={callList} agents={agentList} limit={5} />
+        <RecentCallsTable calls={callList} agents={agentList} limit={5} onHideCall={hideCall} />
       </div>
     </div>
   );

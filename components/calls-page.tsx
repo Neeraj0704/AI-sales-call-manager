@@ -1,18 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { useAssistants, useCalls } from "@/lib/hooks";
+import { useAssistants, useCalls, useHiddenCalls } from "@/lib/hooks";
 import { RecentCallsTable } from "./recent-calls-table";
 import { NewCallDialog } from "./new-call-dialog";
 
 export function CallsPage() {
   const { data: agents, isLoading: agentsLoading } = useAssistants();
   const { data: calls, isLoading: callsLoading } = useCalls();
+  const { hiddenIds, hideCall } = useHiddenCalls();
   const [showNewCall, setShowNewCall] = useState(false);
 
   const isLoading = agentsLoading || callsLoading;
   const agentList = Array.isArray(agents) ? agents : [];
-  const callList = Array.isArray(calls) ? calls : [];
+  const allCalls = Array.isArray(calls) ? calls : [];
+  const callList = allCalls.filter((c) => !hiddenIds.has(c.id));
 
   if (isLoading) {
     return (
@@ -56,7 +58,7 @@ export function CallsPage() {
         </button>
       </div>
 
-      <RecentCallsTable calls={callList} agents={agentList} limit={100} />
+      <RecentCallsTable calls={callList} agents={agentList} limit={100} onHideCall={hideCall} />
 
       <NewCallDialog open={showNewCall} onClose={() => setShowNewCall(false)} />
     </div>
