@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { InsightsIcon } from "@/components/icons"; // Import InsightsIcon
 
 const navItems = [
   {
@@ -79,6 +78,28 @@ function PhoneOutIcon({ className }: { className?: string }) {
       <line x1="16" y1="2" x2="22" y2="2" />
       <line x1="22" y1="2" x2="22" y2="8" />
       <line x1="16" y1="8" x2="22" y2="2" />
+    </svg>
+  );
+}
+
+function InsightsIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width={16}
+      height={16}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="19" cy="5" r="1" />
+      <circle cx="5" cy="19" r="1" />
+      <path d="M12 13v5M11 12H6" />
+      <path d="M12 11V6M13 12h5" />
     </svg>
   );
 }
