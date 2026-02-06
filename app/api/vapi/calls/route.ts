@@ -27,14 +27,16 @@ export async function POST(request: Request) {
 
     console.log("[v0] Creating call with:", { assistantId, phoneNumberId, customerNumber });
 
+    // Vapi expects phoneNumber field (the ID), not phoneNumberId
     const call = await vapiPost("/calls", {
       assistantId,
-      phoneNumberId,
+      phoneNumber: phoneNumberId,
       customer: {
         number: customerNumber,
       },
     });
 
+    console.log("[v0] Call created successfully:", call);
     return NextResponse.json(call);
   } catch (error) {
     const message =
