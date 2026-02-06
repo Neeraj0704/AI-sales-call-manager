@@ -7,12 +7,12 @@ import { cn } from "@/lib/utils";
 const navItems = [
   {
     label: "Overview",
-    href: "/",
+    href: "/dashboard",
     icon: OverviewIcon,
   },
   {
     label: "Calls",
-    href: "/calls",
+    href: "/dashboard/calls",
     icon: CallsIcon,
   },
 ];
@@ -97,8 +97,8 @@ export function DashboardSidebar() {
         </span>
         {navItems.map((item) => {
           const isActive =
-            item.href === "/"
-              ? pathname === "/"
+            item.href === "/dashboard"
+              ? pathname === "/dashboard"
               : pathname.startsWith(item.href);
 
           return (

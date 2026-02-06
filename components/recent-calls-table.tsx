@@ -100,7 +100,7 @@ export function RecentCallsTable({
             >
               <td className="px-4 py-3">
                 <Link
-                  href={`/calls/${call.id}`}
+                  href={`/dashboard/calls/${call.id}`}
                   className="text-sm font-medium text-card-foreground hover:text-primary"
                 >
                   {getAgentName(call.assistantId, agents)}

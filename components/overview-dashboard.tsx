@@ -88,7 +88,7 @@ export function OverviewDashboard() {
           </p>
         </div>
         <Link
-          href="/calls"
+          href="/dashboard/calls"
           className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           <svg
@@ -160,7 +160,7 @@ export function OverviewDashboard() {
             Recent Calls
           </h2>
           <Link
-            href="/calls"
+            href="/dashboard/calls"
             className="text-xs font-medium text-primary hover:text-primary/80"
           >
             View all

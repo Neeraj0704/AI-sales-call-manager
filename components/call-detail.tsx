@@ -148,7 +148,7 @@ export function CallDetail({ callId }: { callId: string }) {
       <div className="flex flex-col items-center gap-4 py-20">
         <p className="text-sm text-muted-foreground">Call not found</p>
         <Link
-          href="/calls"
+          href="/dashboard/calls"
           className="text-sm font-medium text-primary hover:text-primary/80"
         >
           Back to Calls
@@ -169,7 +169,7 @@ export function CallDetail({ callId }: { callId: string }) {
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
-          href="/calls"
+          href="/dashboard/calls"
           className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           aria-label="Back to calls"
         >
