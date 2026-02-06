@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { InsightsIcon } from "@/components/icons"; // Import InsightsIcon
 
 const navItems = [
   {
@@ -14,6 +15,11 @@ const navItems = [
     label: "Calls",
     href: "/dashboard/calls",
     icon: CallsIcon,
+  },
+  {
+    label: "AI Insights",
+    href: "/dashboard/insights",
+    icon: InsightsIcon,
   },
 ];
 
