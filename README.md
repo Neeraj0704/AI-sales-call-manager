@@ -196,18 +196,7 @@ This is a **Retrieval-Augmented Generation (RAG)** pattern (see architecture dia
 7. **Review the call** -- Click into any call to see the full transcript, metadata, and structured outputs.
 8. **Ask questions in AI Insights Chat** -- Navigate to AI Insights, select an agent, and ask about patterns, objections, or outcomes across their calls.
 
----
 
-## Design Philosophy
-
-| Principle | Explanation |
-|-----------|-------------|
-| **Demo-First Reliability** | Every feature prioritizes working correctly in a live demo over handling obscure edge cases. |
-| **No Unnecessary Persistence** | Vapi is the source of truth. The dashboard queries live data rather than maintaining a separate database. |
-| **MCP as the Control Plane** | All communication with Vapi flows through the standardized MCP tool interface, not custom API wrappers. |
-| **Humans Manage, AI Executes** | The manager has full visibility and control. AI agents handle the calls but the human decides when, who, and how. |
-
----
 
 ## Tech Stack
 
@@ -221,22 +210,4 @@ This is a **Retrieval-Augmented Generation (RAG)** pattern (see architecture dia
 | **Model Context Protocol (MCP)** | Standardized tool interface connecting the backend to Vapi |
 | **SWR** | Client-side data fetching with polling for real-time updates |
 
----
 
-## Deployment (optional)
-
-This project is **not set up for hosting**. There is no `vercel.json` or other deployment config in the repo.
-
-**To stop automatic deployments** (e.g. if the repo was previously connected to Vercel):
-
-1. Open [Vercel Dashboard](https://vercel.com/dashboard) → your project.
-2. Go to **Settings** → **Git**.
-3. Either **disconnect** the Git repository, or turn off **Automatically deploy pushes** (and optionally **Automatically deploy pull requests**).
-
-After that, pushes to the repo will no longer trigger new deployments.
-
----
-
-## Disclaimer
-
-SalesForge AI is a **demo and prototype** built to showcase the integration of AI voice agents, MCP, and a manager-facing dashboard. It is not intended for production sales usage. Call volumes, error handling, and security measures are scoped for demonstration purposes.
