@@ -3,7 +3,7 @@ import { vapiGet, vapiPost } from "@/lib/vapi";
 
 export async function GET() {
   try {
-    const calls = await vapiGet("/call");
+    const calls = await vapiGet("/calls");
     return NextResponse.json(calls);
   } catch (error) {
     const message =
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const call = await vapiPost("/call", {
+    const call = await vapiPost("/calls", {
       assistantId,
       phoneNumberId,
       customer: {

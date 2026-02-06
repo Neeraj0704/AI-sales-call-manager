@@ -71,10 +71,13 @@ export function InsightsChat() {
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.log("[v0] Insights API error:", { status: response.status, error: errorData });
+        throw new Error(errorData.error || `API error: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log("[v0] Insights API response:", data);
 
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
@@ -85,6 +88,7 @@ export function InsightsChat() {
 
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (error) {
+      console.log("[v0] Insights chat error:", error);
       const errorMsg: Message = {
         id: (Date.now() + 2).toString(),
         role: "assistant",

@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     }
 
     // Fetch all calls and filter by assistantId
-    const allCalls: VapiCall[] = await vapiGet("/call");
+    const allCalls: VapiCall[] = await vapiGet("/calls");
     const agentCalls = allCalls.filter((c) => c.assistantId === assistantId);
 
     // Build context from agent's calls
